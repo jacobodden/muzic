@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'Hit Me With Your Best Shot',
         short_name: 'BestShot',
         description: 'A host-controlled music clip guessing party game',
-        theme_color: '#1a1a2e',
-        background_color: '#1a1a2e',
+        theme_color: '#0f172a',
+        background_color: '#0f172a',
         display: 'standalone',
         orientation: 'any',
         icons: [

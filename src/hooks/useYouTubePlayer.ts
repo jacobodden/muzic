@@ -33,7 +33,7 @@ export function useYouTubePlayer(videoId: string | null) {
   const containerRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<number | null>(null)
 
-  const { setReady, setPlaying } = usePlayerStore()
+  const { setReady, setPlaying, isReady } = usePlayerStore()
 
   const clearTimer = useCallback(() => {
     if (timerRef.current !== null) {
@@ -68,8 +68,8 @@ export function useYouTubePlayer(videoId: string | null) {
           onStateChange: (e: YT.OnStateChangeEvent) => {
             setPlaying(e.data === YT.PlayerState.PLAYING)
           },
-          onError: () => {
-            console.error('YouTube player error for video:', videoId)
+          onError: (e: YT.OnErrorEvent) => {
+            console.error('YouTube player error:', e.data, 'for video:', videoId)
           },
         },
       })
@@ -87,10 +87,10 @@ export function useYouTubePlayer(videoId: string | null) {
 
   useEffect(() => {
     const player = playerRef.current
-    if (!player || !videoId) return
+    if (!player || !videoId || !isReady) return
     player.cueVideoById(videoId)
     clearTimer()
-  }, [videoId, clearTimer])
+  }, [videoId, clearTimer, isReady])
 
   const play = useCallback(() => {
     playerRef.current?.playVideo()

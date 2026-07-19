@@ -10,13 +10,14 @@ export default function GameScreen() {
   const currentVideoIndex = useGameStore((s) => s.currentVideoIndex)
   const shuffledIds = useGameStore((s) => s.shuffledIds)
   const albumArtBlurred = useGameStore((s) => s.albumArtBlurred)
+  const titleRevealed = useGameStore((s) => s.titleRevealed)
 
   const nextSong = useGameStore((s) => s.nextSong)
   const previousSong = useGameStore((s) => s.previousSong)
   const awardPoint = useGameStore((s) => s.awardPoint)
   const removePoint = useGameStore((s) => s.removePoint)
-  const skipRound = useGameStore((s) => s.skipRound)
   const toggleBlur = useGameStore((s) => s.toggleBlur)
+  const toggleReveal = useGameStore((s) => s.toggleReveal)
   const setScreen = useGameStore((s) => s.setScreen)
 
   const videoId = shuffledIds[currentVideoIndex] ?? null
@@ -43,8 +44,9 @@ export default function GameScreen() {
       ArrowRight: nextSong,
       ArrowLeft: previousSong,
       b: toggleBlur,
+      r: toggleReveal,
     }),
-    [isPlaying, pause, play, playSegment, nextSong, previousSong, toggleBlur],
+    [isPlaying, pause, play, playSegment, nextSong, previousSong, toggleBlur, toggleReveal],
   )
   useKeyboardShortcuts(shortcuts)
 
@@ -55,8 +57,8 @@ export default function GameScreen() {
       <div ref={containerRef} className="fixed opacity-0 pointer-events-none" />
 
       {/* Now Playing */}
-      <div className="w-full max-w-md space-y-4 mt-4">
-        <div className="relative aspect-video overflow-hidden rounded bg-gray-800">
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl space-y-4 mt-4">
+        <div className="relative aspect-video sm:aspect-video max-h-96 overflow-hidden rounded bg-slate-800">
           <img
             src={currentVideo.thumbnail || undefined}
             alt=""
@@ -71,69 +73,78 @@ export default function GameScreen() {
         </div>
 
         <div className="text-center">
-          <h2 className="text-xl font-bold">{currentVideo.title}</h2>
-          <p className="text-gray-400">{currentVideo.artist}</p>
-          <p className="text-sm text-gray-500 mt-1">
+          {titleRevealed ? (
+            <h2 className="text-xl font-bold">{currentVideo.title}</h2>
+          ) : (
+            <h2 className="text-xl text-slate-500">???</h2>
+          )}
+          {titleRevealed ? (
+            <p className="text-slate-400">{currentVideo.artist}</p>
+          ) : (
+            <p className="text-slate-600">???</p>
+          )}
+          <p className="text-sm text-slate-500 mt-1">
             Song {currentVideoIndex + 1} / {shuffledIds.length}
           </p>
         </div>
 
         {/* Transport Controls */}
-        <div className="flex justify-center gap-2 flex-wrap">
+        <div className="flex justify-center gap-2 md:gap-3 flex-wrap">
           <button
-            className="rounded bg-gray-700 px-3 py-2 hover:bg-gray-600 disabled:opacity-30"
+            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600 disabled:opacity-30"
             onClick={previousSong}
             disabled={atStart}
           >
-            ⏮
+            Prev
           </button>
           <button
-            className="rounded bg-indigo-600 px-4 py-2 hover:bg-indigo-500"
+            className="rounded bg-slate-700 px-4 py-2 hover:bg-slate-600"
             onClick={isPlaying ? pause : play}
           >
-            {isPlaying ? '⏸ Pause' : '▶ Play'}
+            {isPlaying ? 'Pause' : 'Play'}
           </button>
           <button
-            className="rounded bg-indigo-600 px-3 py-2 hover:bg-indigo-500"
+            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600"
             onClick={() => playSegment(5)}
           >
             5s
           </button>
           <button
-            className="rounded bg-indigo-600 px-3 py-2 hover:bg-indigo-500"
+            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600"
             onClick={() => playSegment(10)}
           >
             10s
           </button>
-
           <button
-            className="rounded bg-gray-700 px-3 py-2 hover:bg-gray-600 disabled:opacity-30"
+            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600 disabled:opacity-30"
             onClick={nextSong}
             disabled={atEnd}
           >
-            ⏭
+            Next
           </button>
         </div>
 
         {/* Host Actions */}
-        <div className="flex justify-center gap-2 flex-wrap">
+        <div className="flex justify-center gap-3 flex-wrap">
           <button
-            className={`rounded px-3 py-1 text-sm ${
-              albumArtBlurred ? 'bg-yellow-700' : 'bg-yellow-600'
+            className={`rounded px-4 py-2 text-base ${
+              titleRevealed ? 'bg-green-700' : 'bg-green-600'
+            } hover:opacity-80`}
+            onClick={toggleReveal}
+          >
+            {titleRevealed ? 'Hide Title' : 'Show Title'}
+          </button>
+          <button
+            className={`rounded px-4 py-2 text-base ${
+              albumArtBlurred ? 'bg-amber-700' : 'bg-amber-600'
             } hover:opacity-80`}
             onClick={toggleBlur}
           >
             {albumArtBlurred ? 'Unblur Art' : 'Blur Art'}
           </button>
-          <button
-            className="rounded bg-red-700 px-3 py-1 text-sm hover:bg-red-600"
-            onClick={skipRound}
-          >
-            Skip
-          </button>
           {atEnd && (
             <button
-              className="rounded bg-indigo-600 px-3 py-1 text-sm font-semibold hover:bg-indigo-500"
+              className="rounded bg-slate-700 px-4 py-2 text-base font-semibold hover:bg-slate-600"
               onClick={handleFinish}
             >
               Finish Game
@@ -147,7 +158,7 @@ export default function GameScreen() {
           {players.map((p, i) => (
             <div
               key={p.id}
-              className="flex items-center justify-between rounded bg-gray-800 px-3 py-2"
+              className="flex items-center justify-between rounded bg-slate-800 px-3 py-2"
             >
               <span className="flex items-center gap-2">
                 <span
@@ -165,7 +176,7 @@ export default function GameScreen() {
                   -1
                 </button>
                 <button
-                  className="rounded bg-green-700 px-2 py-1 text-xs hover:bg-green-600"
+                  className="rounded bg-emerald-700 px-2 py-1 text-xs hover:bg-emerald-600"
                   onClick={() => awardPoint(p.id)}
                 >
                   +1

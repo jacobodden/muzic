@@ -1,8 +1,8 @@
 # Component Architecture
 
-## Screen Components (src/components/screens/) `[x]`
+## Screen Components (src/components/screens/)
 
-These are the top-level routed views. Only one is rendered at a time based on `useGameStore.screen`.
+Top-level routed views. Rendered based on `useGameStore.screen`.
 
 ```
 App.tsx
@@ -13,73 +13,56 @@ App.tsx
 ```
 
 ### `<WelcomeScreen />`
-- `PlaylistUrlInput` — text input with URL validation
-- `ApiKeyInput` — masked text input, stored via Zustand persist
-- `LoadPlaylistButton` — triggers fetch or loads from cache
-- `CachedPlaylistBanner` — shows if a cached version exists
+- Playlist URL input with URL validation
+- Load button — fetches from YouTube API or loads from IndexedDB cache
+- Error display for invalid URL, missing API key, empty playlists, network errors
 
 ### `<SetupScreen />`
-- `PlaylistSummary` — playlist name, thumbnail grid, video count
-- `PlayerListEditor` — add/remove player names
-- `PlayerBadge` — colored badge per player
-- `StartGameButton` — disabled until ≥ 2 players
+- Playlist summary card (name, video count)
+- Player list editor — add/remove player names with colored badges
+- Start Game button (disabled until ≥ 2 players)
 
 ### `<GameScreen />`
-- `YouTubePlayer` — hidden IFrame wrapper
-- `NowPlaying` — album art (blur toggle), title, artist
-- `TransportControls` — play, pause, 5s, 10s, prev, next
-- `ProgressBar` — playback progress indicator
-- `PlayerScoreboard` — list of players with +1 buttons
-- `HostActionBar` — blur toggle, reveal toggle, skip button
+- Hidden YouTube IFrame player (audio only)
+- Now Playing card — album art (blur toggle), title, artist always shown
+- Transport controls — Play/Pause toggle, 5s, 10s, Prev, Next
+- Host actions — Blur/Unblur Art, Skip, Finish Game
+- Player scoreboard — name, score, -1 and +1 buttons per player
 
 ### `<GameOverScreen />`
-- `FinalScoreboard` — ranked player list with scores
-- `SummaryStats` — per-player accuracy stats
-- `ActionButtons` — Play Again, New Playlist, Edit Players
+- Ranked scoreboard with winner highlighted
+- Rounds played count
+- Action buttons — Play Again, Edit Players, New Playlist
 
-## UI Components (src/components/ui/) `[ ]` — not yet built
-
-Reusable primitives:
-
-| Component | Props | Description |
-|-----------|-------|-------------|
-| `Button` | `variant`, `size`, `onClick`, `disabled` | Styled button |
-| `IconButton` | `icon`, `label`, `onClick` | Circular icon button |
-| `Modal` | `open`, `onClose`, `title`, `children` | Centered dialog overlay |
-| `Input` | `value`, `onChange`, `placeholder`, `error` | Text input |
-| `Badge` | `color`, `children` | Colored label/pill |
-| `Card` | `children` | Bordered container |
-| `Toast` | `message`, `type`, `onDismiss` | Notification toast |
-
-## Custom Hooks (src/hooks/) `[x]`
+## Custom Hooks (src/hooks/)
 
 | Hook | Returns | Purpose |
 |------|---------|---------|
-| `useYouTubePlayer(videoId)` | `{ play, pause, seekTo, isReady, isPlaying }` | Manages hidden IFrame player |
-| `usePlaySegment(duration)` | `{ playing, play }` | Plays N seconds then pauses |
-| `usePlaylist(url)` | `{ playlist, loading, error, fetch }` | Fetches/caches playlist |
+| `useYouTubePlayer(videoId)` | `{ containerRef, play, pause, playSegment, seekToStart }` | Manages hidden IFrame player |
 | `useKeyboardShortcuts(handlers)` | — | Registers global key handlers |
-| `useGamePersistence()` | — | Auto-saves game state to Dexie |
+
+### `useYouTubePlayer` details
+- Loads YouTube IFrame API via `onYouTubeIframeAPIReady` callback
+- Creates player with 640x360 dimensions (hidden via CSS `opacity-0 pointer-events-none`)
+- Caches API load promise to handle React StrictMode double-mount
+- Exposes `play()`, `pause()`, `playSegment(seconds)`, `seekToStart()`
+- Player lifecycle managed via `playerStore` (ready, playing states)
 
 ## Data Flow Pattern
 
 ```
-User Action
+User Action (click / keyboard)
     │
     ▼
 Component Handler
     │
     ├── calls Zustand action   (e.g. awardPoint(playerId))
     │       │
-    │       ├── updates store state
-    │       ├── possibly writes to Dexie (async fire-and-forget)
-    │       └── triggers re-render
+    │       └── updates store → triggers re-render
     │
     └── calls hook method     (e.g. playSegment(5))
             │
-            └── YouTube IFrame API (e.g. seekTo(0), playVideo())
+            └── YouTube IFrame API (seekTo, playVideo)
 ```
 
-Avoid prop drilling — components read from Zustand stores directly via hooks.
-
-Avoid storing derived data in state — compute from store values in render.
+Components read directly from Zustand stores via hooks — no prop drilling.

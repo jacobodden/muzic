@@ -38,17 +38,17 @@ export default function GameOverScreen() {
     <div className="flex min-h-dvh flex-col items-center p-4">
       <h1 className="text-3xl font-bold my-4">Game Over</h1>
 
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl space-y-6">
         <div className="space-y-2">
           {standings.map((p, i) => (
             <div
               key={p.id}
               className={`flex items-center justify-between rounded px-4 py-3 ${
-                i === 0 ? 'bg-yellow-900 ring-1 ring-yellow-500' : 'bg-gray-800'
+                i === 0 ? 'bg-slate-700 ring-1 ring-slate-500' : 'bg-slate-800'
               }`}
             >
               <span className="flex items-center gap-2">
-                <span className="text-lg">{i === 0 ? '👑' : ''}</span>
+                {i === 0 && <span className="text-lg">1st</span>}
                 <span
                   className="inline-block h-3 w-3 rounded-full"
                   style={{
@@ -62,25 +62,25 @@ export default function GameOverScreen() {
           ))}
         </div>
 
-        <p className="text-center text-sm text-gray-400">
+        <p className="text-center text-sm text-slate-400">
           {rounds.length} rounds played
         </p>
 
         <div className="flex flex-col gap-3">
           <button
-            className="rounded bg-indigo-600 px-4 py-2 font-semibold hover:bg-indigo-500"
+            className="rounded bg-slate-700 px-4 py-2 font-semibold hover:bg-slate-600"
             onClick={handlePlayAgain}
           >
             Play Again
           </button>
           <button
-            className="rounded bg-gray-700 px-4 py-2 hover:bg-gray-600"
+            className="rounded bg-slate-700 px-4 py-2 hover:bg-slate-600"
             onClick={handleEditPlayers}
           >
             Edit Players
           </button>
           <button
-            className="rounded bg-gray-700 px-4 py-2 hover:bg-gray-600"
+            className="rounded bg-slate-700 px-4 py-2 hover:bg-slate-600"
             onClick={handleNewPlaylist}
           >
             New Playlist

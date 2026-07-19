@@ -1,14 +1,5 @@
 # Game Flow
 
-## Status
-
-All four screens are built and functional. Notable gaps (Phase 2):
-- No auto-advance after awarding a point (host clicks Next manually)
-- No game auto-save on each round (save on Game Over only)
-- No mid-session resume on page refresh
-- No thumbnail grid on Setup screen
-- No video duration display
-
 ## Screen Map
 
 ```
@@ -22,66 +13,59 @@ Welcome ────► Setup ────► Game ────► GameOver
 
 ### Welcome Screen
 
-1. User enters a YouTube playlist URL (e.g. `https://youtube.com/playlist?list=PL...`)
-2. User enters their YouTube Data API v3 key (stored in localStorage)
-3. App validates the URL format and extracts `playlistId`
-4. App checks IndexedDB for a cached version of this playlist
-   - If cached and fresh (< 24h): show playlist summary, option to refresh
-   - If cached but stale: show cached version + "Refresh from YouTube" button
-   - If not cached: fetch from YouTube Data API
-5. On successful fetch: store in IndexedDB, navigate to Setup
+1. User enters a YouTube playlist URL
+2. App validates the URL format and extracts `playlistId`
+3. App checks IndexedDB for a cached version of this playlist
+   - If cached and fresh (< 24h): loads immediately, navigates to Setup
+   - If not cached or stale: fetches from YouTube Data API
+4. On successful fetch: stores in IndexedDB, navigates to Setup
+5. API key is read from `VITE_YOUTUBE_API_KEY` env var
 
 **Error states:**
-- Invalid URL format → inline validation message
-- API key invalid/expired → error message with link to Google Cloud Console
-- Playlist empty/private → appropriate message
-- Network error → retry button, fall back to cached if available
+- Missing API key → error message pointing to `.env.local`
+- Invalid URL format → inline validation
+- API error (quota, bad key, private playlist) → descriptive message
+- Empty playlist (all videos filtered out) → "No playable videos found"
 
 ### Setup Screen
 
-1. Shows playlist name and video count (with thumbnail grid)
-2. Host adds player names (2–8 players recommended)
-   - Text input + "Add" button or Enter key
-   - Each player gets a colored badge
-   - Remove button per player
-3. Optional: Host can edit artist names for individual videos
-4. "Start Game" button (disabled until ≥ 2 players added)
-5. "Back to Welcome" to choose a different playlist
+1. Shows playlist name and song count
+2. Host adds player names via text input + Add button or Enter key
+3. Each player shown with a colored badge and Remove button
+4. Start Game button — enabled once ≥ 2 players added
+5. Back button returns to Welcome
 
 ### Game Screen (Main Gameplay)
 
 **Layout:**
-- Top: Now Playing card (album art, title, artist)
-- Center: Transport controls
+- Top: Now Playing card (album art, title, artist, track number)
+- Center: Transport controls + host actions
 - Bottom: Player scoreboard
 
 **Now Playing Card:**
-- Album art displayed with CSS blur filter
-- Song title hidden unless host toggles reveal
-- Artist hidden unless host toggles reveal
-- Track number indicator (e.g. "Song 3 / 25")
+- Album art with blur toggle (Blur Art / Unblur Art button, B key)
+- Song title and artist always visible
+- Track indicator (e.g. "Song 3 / 25")
 
 **Transport Controls:**
-- ▶ Play from start — `seekTo(0)` then `playVideo()`
-- ⏵ Play 5s — `seekTo(0)` + play for 5 seconds, then pause
-- ⏵ Play 10s — `seekTo(0)` + play for 10 seconds, then pause
-- ⏸ Pause — `pauseVideo()`
-- ⏮ Previous song — decrement index, restart
-- ⏭ Next song — increment index (shuffled order), restart
-- Progress bar showing current playback position
+- Play / Pause toggle — starts from beginning or pauses current
+- 5s — plays first 5 seconds then pauses
+- 10s — plays first 10 seconds then pauses
+- Prev — previous song (disabled at first song)
+- Next — next song (disabled at last song)
 
 **Host Actions:**
-- "Award Point" button — opens player selector, awards 1 point
-- "Skip" — mark round as no-correct, move to next song
-- "Toggle Blur" — unblur/blur album art
-- "Reveal" — show/hide title and artist
+- Blur/Unblur Art — toggle thumbnail blur
+- Skip — marks round as no-correct, advances to next song
+- Finish Game — appears at last song, navigates to Game Over
 
-**Scoring Flow:**
-1. Clip plays (host can play/pause/replay as needed)
+**Scoring:**
+1. Clip plays (host can replay, skip, or pause as needed)
 2. Players call out answers verbally
-3. Host decides who answered correctly (or if anyone did)
-4. Host taps the player's "+" button on the scoreboard
-5. Point awarded, round recorded, auto-advance to next song
+3. Host decides who answered correctly
+4. Host taps player's +1 button to award a point
+5. -1 button available to correct accidental awards
+6. Host clicks Next to advance
 
 **Keyboard Shortcuts:**
 | Key | Action |
@@ -92,32 +76,25 @@ Welcome ────► Setup ────► Game ────► GameOver
 | → | Next song |
 | ← | Previous song |
 | B | Toggle blur |
-| R | Reveal title/artist |
-| 1-8 | Award point to player N |
 
 ### Game Over Screen
 
-1. Final scoreboard displayed (highest score at top)
-2. Crown/medal icon on first place
-3. Summary stats: total rounds, correct guesses per player
-4. Actions:
-   - "Play Again" — reshuffle playlist, reset scores, go to Game screen
-   - "New Playlist" — go to Welcome screen
-   - "Edit Players" — go to Setup screen
+1. Final scoreboard sorted by score (winner highlighted)
+2. Rounds played count
+3. Actions:
+   - Play Again — reshuffle playlist, reset scores, return to Game
+   - Edit Players — return to Setup
+   - New Playlist — return to Welcome
 
 ## Shuffle Logic
 
-- When game starts, videos are shuffled into a random order
-- Each video appears exactly once per game
-- "Previous" goes back in the shuffled order (not the original order)
-- "Play Again" reshuffles
+- Videos shuffled into random order when game starts
+- Each video plays exactly once per game
+- Prev/Next navigate the shuffled order
+- Play Again reshuffles
 
 ## Edge Cases
 
-- **Single video playlist**: After playing, next/previous wraps to itself. Game works but is limited.
-- **All songs guessed immediately**: Fine — just tap through quickly.
-- **No one guesses correctly**: Host presses "Skip" to record a null round and advance.
-- **Player joins mid-game**: Add them in Setup only. No mid-game joining (simplifies scoring).
-- **Browser refresh during game**: Game state can be persisted to IndexedDB on each round — offer "Resume Game" on next load.
-- **Very long playlist (100+ videos)**: Display paginated. Game ends when all played or host stops.
-- **Song repeats**: Each video plays once per game. No repeats unless host manually goes back.
+- **Single video playlist**: Works fine, just one song to guess
+- **No one guesses correctly**: Host presses Skip to record a null round and advance
+- **Song repeats**: Each video plays once per game

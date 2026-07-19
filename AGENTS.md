@@ -2,8 +2,6 @@
 
 A host-controlled music clip guessing party game. Enter a YouTube playlist, play song clips from the start, and players compete to guess the song. The host controls playback and adjudicates answers. Built offline-first as a PWA.
 
-**Status: Phase 1 (scaffold) complete.** All four screens built with full game flow. See `docs/` for detailed status on each subsystem.
-
 ## Quick Start
 
 ```bash
@@ -30,9 +28,8 @@ npm run preview              # preview production build
 
 ```
 src/
-  components/       # React components, one file per component
+  components/
     screens/        # Top-level screen components (Welcome, Setup, Game, GameOver)
-    ui/             # Reusable UI primitives (Button, Modal, etc.)
   stores/           # Zustand state stores
   db/               # Dexie database definition and helpers
   hooks/            # Custom React hooks
@@ -49,28 +46,26 @@ docs/               # Project documentation
 - **Hooks**: camelCase, prefixed with `use`, named export
 - **Stores**: camelCase, `create<Name>Store`, named export
 - **Types**: PascalCase, `interface` over `type` where possible, named export
-- **CSS**: Tailwind utility classes primarily. Extract to `className` variables for repeated groups.
+- **CSS**: Tailwind utility classes primarily
 - **Imports order**: React → third-party → internal (absolute `@/` alias)
 
 ## State Management Pattern
 
 Zustand stores for global game state (players, scores, current song). React state for ephemeral UI state. Dexie for persistent data (playlist cache, game history).
 
-Stores should be thin — orchestrate reads/writes to Dexie and expose derived state.
-
 ## Key Architecture Decisions
 
-1. **YouTube Data API key** is user-provided, stored in localStorage. No backend.
-2. **Playlist metadata** is cached in IndexedDB — refetch only on explicit refresh.
-3. **YouTube IFrame player** is hidden via CSS (opacity: 0, height: 0). Audio still plays.
+1. **YouTube Data API key** is set via `VITE_YOUTUBE_API_KEY` env var (`.env.local` or CI secret).
+2. **Playlist metadata** is cached in IndexedDB — refetch only on cache expiry.
+3. **YouTube IFrame player** is hidden via CSS. Audio still plays.
 4. **No authentication**. This is a local party game — all state is on-device.
 5. **Offline**: App shell works offline. Playlist data works offline if cached. Playback requires internet.
 
 ## Game Flow
 
-1. **Welcome** → Enter playlist URL + API key → Fetch & cache videos
-2. **Setup** → Add players → Review playlist → Start game
-3. **Playing** → Play clips from start (5s/10s/pause/skip) → Host awards points → Next song
+1. **Welcome** → Enter playlist URL → Fetch & cache videos
+2. **Setup** → Add players → Start game
+3. **Playing** → Play clips (5s/10s/pause/skip) → Host awards points → Next song
 4. **Game Over** → Final scores → Play again or new playlist
 
 ## Routing
@@ -85,9 +80,9 @@ screen: 'welcome' | 'setup' | 'game' | 'gameover'
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_YOUTUBE_API_KEY` | No* | YouTube Data API v3 key |
+| `VITE_YOUTUBE_API_KEY` | Yes | YouTube Data API v3 key |
 
-*Optional if you enter the key via the UI (it persists to localStorage). Set in `.env.local` for local dev, or as a CI secret for production builds. Only `VITE_` prefixed vars are available to client code.
+Set in `.env.local` for local dev, or as a CI secret for production builds. Only `VITE_` prefixed vars are available to client code.
 
 See `.env.example` for the template.
 
@@ -98,7 +93,6 @@ See `.env.example` for the template.
 | `npm run dev` | Start Vite dev server |
 | `npm run build` | Production build with PWA |
 | `npm run preview` | Preview production build |
-| `npm run lint` | ESLint check |
 | `npm run typecheck` | TypeScript type check |
 
 ---

@@ -3,17 +3,29 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { usePlayerStore } from '@/stores/playerStore'
 
+let apiPromise: Promise<void> | null = null
+
 function loadYouTubeAPI(): Promise<void> {
-  return new Promise((resolve) => {
+  if (apiPromise) return apiPromise
+
+  apiPromise = new Promise((resolve) => {
     if (window.YT?.Player) {
       resolve()
       return
     }
+
+    const prev = window.onYouTubeIframeAPIReady
+    window.onYouTubeIframeAPIReady = () => {
+      prev?.()
+      resolve()
+    }
+
     const tag = document.createElement('script')
     tag.src = 'https://www.youtube.com/iframe_api'
-    tag.onload = () => resolve()
     document.head.appendChild(tag)
   })
+
+  return apiPromise
 }
 
 export function useYouTubePlayer(videoId: string | null) {

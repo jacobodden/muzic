@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dev-dist/
+
+*.local
+.env
+.env.local
+.env.*.local
+
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+*.tsbuildinfo

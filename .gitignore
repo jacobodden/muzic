@@ -2,11 +2,11 @@ node_modules/
 dist/
 dev-dist/
 
-*.local
-.env
+# Environment files with actual secrets
 .env.local
 .env.*.local
 
+# OS junk
 .DS_Store
 Thumbs.db
 *.swp

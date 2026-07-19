@@ -1,5 +1,14 @@
 # Game Flow
 
+## Status
+
+All four screens are built and functional. Notable gaps (Phase 2):
+- No auto-advance after awarding a point (host clicks Next manually)
+- No game auto-save on each round (save on Game Over only)
+- No mid-session resume on page refresh
+- No thumbnail grid on Setup screen
+- No video duration display
+
 ## Screen Map
 
 ```

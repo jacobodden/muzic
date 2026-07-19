@@ -1,6 +1,6 @@
 # Data Model
 
-## IndexedDB Schema (Dexie.js)
+## IndexedDB Schema (Dexie.js) `[x]`
 
 ```typescript
 // db/db.ts
@@ -40,7 +40,6 @@ CachedVideo {
   title: string              // video title
   artist: string             // channel name (editable by host)
   thumbnail: string          // high-res thumbnail URL
-  duration: number           // video duration in seconds
 }
 ```
 
@@ -71,7 +70,9 @@ Round {
 }
 ```
 
-## Zustand Stores
+**Note:** `CachedVideo.duration` is not yet implemented — YouTube Data API requires an extra `videos.list` call to get video duration. Tracked as a future enhancement.
+
+## Zustand Stores `[x]`
 
 ### `useGameStore` — Current game session
 

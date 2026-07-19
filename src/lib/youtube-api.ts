@@ -39,12 +39,17 @@ async function fetchPlaylistPage(
     )
   }
 
-  const videos: CachedVideo[] = (data.items ?? []).map((item: any) => ({
-    videoId: item.snippet.resourceId.videoId,
-    title: item.snippet.title,
-    artist: item.snippet.videoOwnerChannelTitle ?? item.snippet.channelTitle ?? 'Unknown',
-    thumbnail: item.snippet.thumbnails.high?.url ?? item.snippet.thumbnails.default.url,
-  }))
+  const videos: CachedVideo[] = (data.items ?? [])
+    .filter((item: any) => item.snippet?.resourceId?.videoId)
+    .map((item: any) => ({
+      videoId: item.snippet.resourceId.videoId,
+      title: item.snippet.title ?? 'Unknown',
+      artist: item.snippet.videoOwnerChannelTitle ?? item.snippet.channelTitle ?? 'Unknown',
+      thumbnail:
+        item.snippet.thumbnails?.high?.url ??
+        item.snippet.thumbnails?.default?.url ??
+        '',
+    }))
 
   return { videos, nextPageToken: data.nextPageToken }
 }

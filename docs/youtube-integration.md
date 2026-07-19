@@ -7,7 +7,7 @@ Two separate YouTube APIs are used:
 1. **YouTube Data API v3** — Fetch playlist metadata (video list, titles, thumbnails)
 2. **YouTube IFrame API** — Embed and control a hidden video player for audio playback
 
-## YouTube Data API v3
+## YouTube Data API v3 `[x]`
 
 ### Setup
 
@@ -101,7 +101,7 @@ function mapPlaylistItem(item: PlaylistItem): CachedVideo {
 - Daily quota: 10,000 units (standard)
 - **Cache aggressively** — once fetched, store in IndexedDB. Only re-fetch on explicit user action.
 
-## YouTube IFrame API
+## YouTube IFrame API `[x]`
 
 ### Loading the API
 

@@ -60,11 +60,12 @@ export default function GameScreen() {
       <div className="w-full max-w-md space-y-4 mt-4">
         <div className="relative aspect-video overflow-hidden rounded bg-gray-800">
           <img
-            src={currentVideo.thumbnail}
+            src={currentVideo.thumbnail || undefined}
             alt=""
             className={`h-full w-full object-cover transition-all ${
               albumArtBlurred ? 'blur-xl scale-110' : ''
             }`}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
           <div className="absolute inset-0 flex items-center justify-center">
             <p className="text-4xl opacity-30">♪</p>

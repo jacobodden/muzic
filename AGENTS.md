@@ -2,13 +2,16 @@
 
 A host-controlled music clip guessing party game. Enter a YouTube playlist, play song clips from the start, and players compete to guess the song. The host controls playback and adjudicates answers. Built offline-first as a PWA.
 
+**Status: Phase 1 (scaffold) complete.** All four screens built with full game flow. See `docs/` for detailed status on each subsystem.
+
 ## Quick Start
 
 ```bash
 npm install
-npm run dev       # dev server
-npm run build     # production build
-npm run preview   # preview production build
+cp .env.example .env.local   # then edit .env.local with your YouTube API key
+npm run dev                  # dev server
+npm run build                # production build
+npm run preview              # preview production build
 ```
 
 ## Tech Stack
@@ -77,6 +80,16 @@ Simple screen-based navigation via Zustand `screen` state (no React Router neede
 ```
 screen: 'welcome' | 'setup' | 'game' | 'gameover'
 ```
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_YOUTUBE_API_KEY` | No* | YouTube Data API v3 key |
+
+*Optional if you enter the key via the UI (it persists to localStorage). Set in `.env.local` for local dev, or as a CI secret for production builds. Only `VITE_` prefixed vars are available to client code.
+
+See `.env.example` for the template.
 
 ## NPM Scripts
 

@@ -1,6 +1,6 @@
 # Component Architecture
 
-## Screen Components (src/components/screens/)
+## Screen Components (src/components/screens/) `[x]`
 
 These are the top-level routed views. Only one is rendered at a time based on `useGameStore.screen`.
 
@@ -37,7 +37,7 @@ App.tsx
 - `SummaryStats` — per-player accuracy stats
 - `ActionButtons` — Play Again, New Playlist, Edit Players
 
-## UI Components (src/components/ui/)
+## UI Components (src/components/ui/) `[ ]` — not yet built
 
 Reusable primitives:
 
@@ -51,7 +51,7 @@ Reusable primitives:
 | `Card` | `children` | Bordered container |
 | `Toast` | `message`, `type`, `onDismiss` | Notification toast |
 
-## Custom Hooks (src/hooks/)
+## Custom Hooks (src/hooks/) `[x]`
 
 | Hook | Returns | Purpose |
 |------|---------|---------|

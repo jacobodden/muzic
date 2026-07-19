@@ -27,21 +27,21 @@
 
 ## Layers
 
-### 1. Data Layer (Dexie.js + IndexedDB)
+### 1. Data Layer (Dexie.js + IndexedDB) `[x]`
 Persists playlist metadata, game sessions, player history. Provides offline access to previously fetched playlists.
 
-### 2. State Layer (Zustand)
+### 2. State Layer (Zustand) `[x]`
 Lightweight reactive stores for current game session: active screen, current song, player scores, playback state. Zustand stores hydrate from and persist to Dexie.
 
-### 3. UI Layer (React + Tailwind)
+### 3. UI Layer (React + Tailwind) `[x]`
 Screen-based navigation (Welcome → Setup → Game → GameOver). Components are thin — mostly read from Zustand and dispatch actions.
 
-### 4. YouTube Integration Layer
+### 4. YouTube Integration Layer `[x]`
 Two concerns:
 - **Data API** (`lib/youtube-api.ts`) — fetches playlist metadata. Called once per playlist load.
 - **IFrame API** (`hooks/useYouTubePlayer.ts`) — manages a hidden player instance. Exposes `play`, `pause`, `seekTo`, `playSegment(seconds)`.
 
-## PWA Strategy
+## PWA Strategy `[x]`
 
 ### Service Worker (vite-plugin-pwa)
 - Precaches all app shell assets (HTML, JS, CSS, fonts)

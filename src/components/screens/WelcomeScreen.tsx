@@ -5,24 +5,22 @@ import { extractPlaylistId, fetchPlaylistVideos } from '@/lib/youtube-api'
 import { db } from '@/db/db'
 import type { CachedPlaylist } from '@/types'
 
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY
+
 export default function WelcomeScreen() {
   const [url, setUrl] = useState('')
-  const [apiKeyInput, setApiKeyInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const loadPlaylist = useGameStore((s) => s.loadPlaylist)
   const setScreen = useGameStore((s) => s.setScreen)
-  const { apiKey, lastPlaylistUrl, setApiKey, setLastPlaylistUrl } = useSettingsStore()
-
-  const displayKey = apiKey ?? apiKeyInput
+  const { lastPlaylistUrl, setLastPlaylistUrl } = useSettingsStore()
 
   const handleLoad = useCallback(async () => {
     setError(null)
 
-    const key = displayKey.trim()
-    if (!key) {
-      setError('Please enter a YouTube Data API key.')
+    if (!API_KEY) {
+      setError('YouTube API key is not configured. Set VITE_YOUTUBE_API_KEY in your .env.local file.')
       return
     }
 
@@ -32,7 +30,6 @@ export default function WelcomeScreen() {
       return
     }
 
-    if (!apiKey) setApiKey(key)
     setLastPlaylistUrl(url.trim())
     setLoading(true)
 
@@ -46,7 +43,12 @@ export default function WelcomeScreen() {
         return
       }
 
-      const videos = await fetchPlaylistVideos(playlistId, key)
+      const videos = await fetchPlaylistVideos(playlistId, API_KEY)
+
+      if (videos.length === 0) {
+        setError('No playable videos found in this playlist.')
+        return
+      }
 
       const playlistName = `${videos.length} songs loaded`
       const playlist: CachedPlaylist = {
@@ -65,14 +67,14 @@ export default function WelcomeScreen() {
     } finally {
       setLoading(false)
     }
-  }, [url, displayKey, apiKey, loadPlaylist, setScreen, setApiKey, setLastPlaylistUrl])
+  }, [url, loadPlaylist, setScreen, setLastPlaylistUrl])
 
   return (
     <div className="flex min-h-dvh items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <h1 className="text-3xl font-bold text-center">Hit Me With Your Best Shot</h1>
         <p className="text-center text-gray-400">
-          Enter a YouTube playlist and start the game
+          Enter a YouTube playlist URL to start
         </p>
 
         <div className="space-y-4">
@@ -83,21 +85,6 @@ export default function WelcomeScreen() {
               placeholder="https://youtube.com/playlist?list=..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleLoad()}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1">
-              YouTube Data API Key
-              {apiKey && <span className="text-green-400 ml-2">(saved)</span>}
-            </label>
-            <input
-              className="w-full rounded bg-gray-800 border border-gray-600 px-3 py-2"
-              type="password"
-              placeholder="AIza..."
-              value={apiKeyInput || apiKey || ''}
-              onChange={(e) => setApiKeyInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLoad()}
             />
           </div>

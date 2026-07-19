@@ -129,4 +129,4 @@ Persisted to `localStorage` via Zustand `persist` middleware under key `hmwybs-s
 
 | Variable | Source | Purpose |
 |----------|--------|---------|
-| `VITE_YOUTUBE_API_KEY` | `.env.local` / CI secret | YouTube Data API v3 key |
+| `VITE_MUZIC_YT_API_KEY` | `.env.local` / CI secret | YouTube Data API v3 key |

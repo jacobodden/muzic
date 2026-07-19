@@ -55,7 +55,7 @@ Zustand stores for global game state (players, scores, current song). React stat
 
 ## Key Architecture Decisions
 
-1. **YouTube Data API key** is set via `VITE_YOUTUBE_API_KEY` env var (`.env.local` or CI secret).
+1. **YouTube Data API key** is set via `VITE_MUZIC_YT_API_KEY` env var (`.env.local` or CI secret).
 2. **Playlist metadata** is cached in IndexedDB — refetch only on cache expiry.
 3. **YouTube IFrame player** is hidden via CSS. Audio still plays.
 4. **No authentication**. This is a local party game — all state is on-device.
@@ -80,7 +80,7 @@ screen: 'welcome' | 'setup' | 'game' | 'gameover'
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_YOUTUBE_API_KEY` | Yes | YouTube Data API v3 key |
+| `VITE_MUZIC_YT_API_KEY` | Yes | YouTube Data API v3 key (formerly `VITE_YOUTUBE_API_KEY`) |
 
 Set in `.env.local` for local dev, or as a CI secret for production builds. Only `VITE_` prefixed vars are available to client code.
 

@@ -19,7 +19,7 @@ Welcome ────► Setup ────► Game ────► GameOver
    - If cached and fresh (< 24h): loads immediately, navigates to Setup
    - If not cached or stale: fetches from YouTube Data API
 4. On successful fetch: stores in IndexedDB, navigates to Setup
-5. API key is read from `VITE_YOUTUBE_API_KEY` env var
+5. API key is read from `VITE_MUZIC_YT_API_KEY` env var
 
 **Error states:**
 - Missing API key → error message pointing to `.env.local`

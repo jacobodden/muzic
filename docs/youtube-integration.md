@@ -9,7 +9,7 @@ Two separate YouTube APIs are used:
 
 ### Setup
 
-API key is read from `VITE_YOUTUBE_API_KEY` environment variable:
+API key is read from `VITE_MUZIC_YT_API_KEY` environment variable:
 - Local development: set in `.env.local`
 - CI/production builds: set as build secret
 

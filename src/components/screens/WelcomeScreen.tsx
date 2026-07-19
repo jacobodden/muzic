@@ -5,7 +5,7 @@ import { extractPlaylistId, fetchPlaylistVideos } from '@/lib/youtube-api'
 import { db } from '@/db/db'
 import type { CachedPlaylist } from '@/types'
 
-const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY
+const API_KEY = import.meta.env.VITE_MUZIC_YT_API_KEY
 
 export default function WelcomeScreen() {
   const [url, setUrl] = useState('')
@@ -20,7 +20,7 @@ export default function WelcomeScreen() {
     setError(null)
 
     if (!API_KEY) {
-      setError('YouTube API key is not configured. Set VITE_YOUTUBE_API_KEY in your .env.local file.')
+      setError('YouTube API key is not configured. Set VITE_MUZIC_YT_API_KEY in your .env.local file.')
       return
     }
 

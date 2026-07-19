@@ -66,7 +66,7 @@ Two concerns:
 
 ## Security Considerations
 
-- YouTube API key is set via `VITE_YOUTUBE_API_KEY` env var (`.env.local` for dev, CI secret for builds)
+- YouTube API key is set via `VITE_MUZIC_YT_API_KEY` env var (`.env.local` for dev, CI secret for builds)
 - No user data leaves the device
 - No backend, no authentication
 - IFrame player is sandboxed by the browser

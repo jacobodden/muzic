@@ -10,7 +10,6 @@ interface GameStore {
   currentVideoIndex: number
   rounds: Round[]
   albumArtBlurred: boolean
-  titleRevealed: boolean
 
   setScreen: (screen: Screen) => void
   loadPlaylist: (playlist: CachedPlaylist) => void
@@ -20,9 +19,9 @@ interface GameStore {
   nextSong: () => void
   previousSong: () => void
   awardPoint: (playerId: string) => void
+  removePoint: (playerId: string) => void
   skipRound: () => void
   toggleBlur: () => void
-  toggleReveal: () => void
   resetGame: () => void
   getCurrentVideoId: () => string | null
   getStandings: () => Player[]
@@ -47,7 +46,6 @@ export const useGameStore = create<GameStore>()((set, get) => ({
   currentVideoIndex: 0,
   rounds: [],
   albumArtBlurred: true,
-  titleRevealed: false,
 
   setScreen: (screen) => set({ screen }),
 
@@ -59,7 +57,6 @@ export const useGameStore = create<GameStore>()((set, get) => ({
       currentVideoIndex: 0,
       rounds: [],
       albumArtBlurred: true,
-      titleRevealed: false,
     })
   },
 
@@ -82,7 +79,6 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     set((s) => ({
       currentVideoIndex: Math.min(s.currentVideoIndex + 1, s.shuffledIds.length - 1),
       albumArtBlurred: true,
-      titleRevealed: false,
     }))
   },
 
@@ -90,7 +86,6 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     set((s) => ({
       currentVideoIndex: Math.max(s.currentVideoIndex - 1, 0),
       albumArtBlurred: true,
-      titleRevealed: false,
     }))
   },
 
@@ -114,6 +109,14 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     }))
   },
 
+  removePoint: (playerId) => {
+    set((s) => ({
+      players: s.players.map((p) =>
+        p.id === playerId ? { ...p, score: Math.max(0, p.score - 1) } : p,
+      ),
+    }))
+  },
+
   skipRound: () => {
     const state = get()
     const videoId = state.shuffledIds[state.currentVideoIndex]
@@ -130,7 +133,6 @@ export const useGameStore = create<GameStore>()((set, get) => ({
   },
 
   toggleBlur: () => set((s) => ({ albumArtBlurred: !s.albumArtBlurred })),
-  toggleReveal: () => set((s) => ({ titleRevealed: !s.titleRevealed })),
 
   resetGame: () => {
     const state = get()
@@ -140,7 +142,6 @@ export const useGameStore = create<GameStore>()((set, get) => ({
       currentVideoIndex: 0,
       rounds: [],
       albumArtBlurred: true,
-      titleRevealed: false,
     })
   },
 

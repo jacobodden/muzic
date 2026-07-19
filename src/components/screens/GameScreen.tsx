@@ -10,14 +10,13 @@ export default function GameScreen() {
   const currentVideoIndex = useGameStore((s) => s.currentVideoIndex)
   const shuffledIds = useGameStore((s) => s.shuffledIds)
   const albumArtBlurred = useGameStore((s) => s.albumArtBlurred)
-  const titleRevealed = useGameStore((s) => s.titleRevealed)
 
   const nextSong = useGameStore((s) => s.nextSong)
   const previousSong = useGameStore((s) => s.previousSong)
   const awardPoint = useGameStore((s) => s.awardPoint)
+  const removePoint = useGameStore((s) => s.removePoint)
   const skipRound = useGameStore((s) => s.skipRound)
   const toggleBlur = useGameStore((s) => s.toggleBlur)
-  const toggleReveal = useGameStore((s) => s.toggleReveal)
   const setScreen = useGameStore((s) => s.setScreen)
 
   const videoId = shuffledIds[currentVideoIndex] ?? null
@@ -44,9 +43,8 @@ export default function GameScreen() {
       ArrowRight: nextSong,
       ArrowLeft: previousSong,
       b: toggleBlur,
-      r: toggleReveal,
     }),
-    [isPlaying, pause, play, playSegment, nextSong, previousSong, toggleBlur, toggleReveal],
+    [isPlaying, pause, play, playSegment, nextSong, previousSong, toggleBlur],
   )
   useKeyboardShortcuts(shortcuts)
 
@@ -54,7 +52,7 @@ export default function GameScreen() {
 
   return (
     <div className="flex min-h-dvh flex-col items-center p-4">
-      <div ref={containerRef} />
+      <div ref={containerRef} className="fixed opacity-0 pointer-events-none" />
 
       {/* Now Playing */}
       <div className="w-full max-w-md space-y-4 mt-4">
@@ -73,16 +71,8 @@ export default function GameScreen() {
         </div>
 
         <div className="text-center">
-          {titleRevealed ? (
-            <h2 className="text-xl font-bold">{currentVideo.title}</h2>
-          ) : (
-            <h2 className="text-xl text-gray-500">???</h2>
-          )}
-          {titleRevealed ? (
-            <p className="text-gray-400">{currentVideo.artist}</p>
-          ) : (
-            <p className="text-gray-600">???</p>
-          )}
+          <h2 className="text-xl font-bold">{currentVideo.title}</h2>
+          <p className="text-gray-400">{currentVideo.artist}</p>
           <p className="text-sm text-gray-500 mt-1">
             Song {currentVideoIndex + 1} / {shuffledIds.length}
           </p>
@@ -99,9 +89,9 @@ export default function GameScreen() {
           </button>
           <button
             className="rounded bg-indigo-600 px-4 py-2 hover:bg-indigo-500"
-            onClick={play}
+            onClick={isPlaying ? pause : play}
           >
-            ▶ Play
+            {isPlaying ? '⏸ Pause' : '▶ Play'}
           </button>
           <button
             className="rounded bg-indigo-600 px-3 py-2 hover:bg-indigo-500"
@@ -115,12 +105,7 @@ export default function GameScreen() {
           >
             10s
           </button>
-          <button
-            className="rounded bg-gray-700 px-3 py-2 hover:bg-gray-600"
-            onClick={pause}
-          >
-            ⏸
-          </button>
+
           <button
             className="rounded bg-gray-700 px-3 py-2 hover:bg-gray-600 disabled:opacity-30"
             onClick={nextSong}
@@ -139,14 +124,6 @@ export default function GameScreen() {
             onClick={toggleBlur}
           >
             {albumArtBlurred ? 'Unblur Art' : 'Blur Art'}
-          </button>
-          <button
-            className={`rounded px-3 py-1 text-sm ${
-              titleRevealed ? 'bg-green-700' : 'bg-green-600'
-            } hover:opacity-80`}
-            onClick={toggleReveal}
-          >
-            {titleRevealed ? 'Hide Answer' : 'Reveal Answer'}
           </button>
           <button
             className="rounded bg-red-700 px-3 py-1 text-sm hover:bg-red-600"
@@ -181,6 +158,12 @@ export default function GameScreen() {
               </span>
               <div className="flex items-center gap-3">
                 <span className="font-mono tabular-nums">{p.score}</span>
+                <button
+                  className="rounded bg-red-800 px-2 py-1 text-xs hover:bg-red-700"
+                  onClick={() => removePoint(p.id)}
+                >
+                  -1
+                </button>
                 <button
                   className="rounded bg-green-700 px-2 py-1 text-xs hover:bg-green-600"
                   onClick={() => awardPoint(p.id)}

@@ -53,8 +53,8 @@ export function useYouTubePlayer(videoId: string | null) {
       if (cancelled) return
 
       playerRef.current = new YT.Player(containerRef.current!, {
-        height: '0',
-        width: '0',
+        height: '360',
+        width: '640',
         playerVars: {
           controls: 0,
           autoplay: 0,

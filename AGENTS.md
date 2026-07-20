@@ -1,4 +1,4 @@
-# Hit Me With Your Best Shot
+# Tune In
 
 A host-controlled music clip guessing party game. Enter a YouTube playlist, play song clips from the start, and players compete to guess the song. The host controls playback and adjudicates answers. Built offline-first as a PWA.
 

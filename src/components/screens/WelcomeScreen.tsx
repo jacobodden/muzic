@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
   const setScreen = useGameStore((s) => s.setScreen)
   const { lastPlaylistUrl, setLastPlaylistUrl } = useSettingsStore()
 
-  const handleLoad = useCallback(async () => {
+  const loadUrl = useCallback(async (urlToLoad: string) => {
     setError(null)
 
     if (!API_KEY) {
@@ -24,13 +24,13 @@ export default function WelcomeScreen() {
       return
     }
 
-    const playlistId = extractPlaylistId(url.trim())
+    const playlistId = extractPlaylistId(urlToLoad)
     if (!playlistId) {
       setError('Invalid YouTube playlist URL.')
       return
     }
 
-    setLastPlaylistUrl(url.trim())
+    setLastPlaylistUrl(urlToLoad)
     setLoading(true)
 
     try {
@@ -53,7 +53,7 @@ export default function WelcomeScreen() {
       const playlistName = `${videos.length} songs loaded`
       const playlist: CachedPlaylist = {
         playlistId,
-        url: url.trim(),
+        url: urlToLoad,
         name: playlistName,
         videos,
         cachedAt: Date.now(),
@@ -67,12 +67,21 @@ export default function WelcomeScreen() {
     } finally {
       setLoading(false)
     }
-  }, [url, loadPlaylist, setScreen, setLastPlaylistUrl])
+  }, [loadPlaylist, setScreen, setLastPlaylistUrl])
+
+  const handleLoad = useCallback(() => loadUrl(url.trim()), [loadUrl, url])
+
+  const handleLoadLast = useCallback(() => {
+    if (lastPlaylistUrl) {
+      setUrl(lastPlaylistUrl)
+      loadUrl(lastPlaylistUrl)
+    }
+  }, [lastPlaylistUrl, loadUrl])
 
   return (
     <div className="flex min-h-dvh items-center justify-center p-4">
       <div className="w-full max-w-md sm:max-w-lg md:max-w-xl space-y-6">
-        <h1 className="text-3xl font-bold text-center">Hit Me With Your Best Shot</h1>
+        <h1 className="text-3xl font-bold text-center">Tune In</h1>
         <p className="text-center text-brand-text">
           Enter a YouTube playlist URL to start
         </p>
@@ -101,9 +110,15 @@ export default function WelcomeScreen() {
         </div>
 
         {lastPlaylistUrl && (
-          <p className="text-xs text-brand-muted text-center">
-            Last playlist: {lastPlaylistUrl}
-          </p>
+          <div className="text-center">
+            <button
+              className="text-xs text-brand-muted hover:text-brand-text underline transition-colors"
+              onClick={handleLoadLast}
+              disabled={loading}
+            >
+              Load last playlist
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -6,7 +6,7 @@ export class AppDB extends Dexie {
   games!: Table<GameSession, string>
 
   constructor() {
-    super('HitMeWithYourBestShot')
+    super('TuneIn')
     this.version(1).stores({
       playlists: '&playlistId, name, cachedAt',
       games: '&id, createdAt',

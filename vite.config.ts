@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Hit Me With Your Best Shot',
-        short_name: 'BestShot',
-        description: 'A host-controlled music clip guessing party game',
+        name: 'Tune In',
+        short_name: 'Tune In',
+        description: 'A music clip guessing party game',
         theme_color: '#080F2C',
         background_color: '#080F2C',
         display: 'standalone',

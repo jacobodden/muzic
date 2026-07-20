@@ -73,7 +73,7 @@ export default function WelcomeScreen() {
     <div className="flex min-h-dvh items-center justify-center p-4">
       <div className="w-full max-w-md sm:max-w-lg md:max-w-xl space-y-6">
         <h1 className="text-3xl font-bold text-center">Hit Me With Your Best Shot</h1>
-        <p className="text-center text-slate-400">
+        <p className="text-center text-brand-text">
           Enter a YouTube playlist URL to start
         </p>
 
@@ -81,7 +81,7 @@ export default function WelcomeScreen() {
           <div>
             <label className="block text-sm mb-1">YouTube Playlist URL</label>
             <input
-              className="w-full rounded bg-slate-800 border border-slate-600 px-3 py-2"
+              className="w-full rounded bg-brand-dark border border-brand-light px-3 py-2"
               placeholder="https://youtube.com/playlist?list=..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
@@ -92,7 +92,7 @@ export default function WelcomeScreen() {
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
           <button
-            className="w-full rounded bg-slate-700 px-4 py-2 font-semibold hover:bg-slate-600 disabled:opacity-50"
+            className="w-full rounded bg-brand-mid px-4 py-2 font-semibold hover:bg-brand-light disabled:opacity-50"
             onClick={handleLoad}
             disabled={loading || !url.trim()}
           >
@@ -101,7 +101,7 @@ export default function WelcomeScreen() {
         </div>
 
         {lastPlaylistUrl && (
-          <p className="text-xs text-slate-500 text-center">
+          <p className="text-xs text-brand-muted text-center">
             Last playlist: {lastPlaylistUrl}
           </p>
         )}

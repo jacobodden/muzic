@@ -1,6 +1,6 @@
 /// <reference types="youtube" />
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { usePlayerStore } from '@/stores/playerStore'
 
 let apiPromise: Promise<void> | null = null
@@ -32,6 +32,7 @@ export function useYouTubePlayer(videoId: string | null) {
   const playerRef = useRef<YT.Player | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<number | null>(null)
+  const [playbackError, setPlaybackError] = useState(false)
 
   const { setReady, setPlaying, isReady } = usePlayerStore()
 
@@ -68,8 +69,8 @@ export function useYouTubePlayer(videoId: string | null) {
           onStateChange: (e: YT.OnStateChangeEvent) => {
             setPlaying(e.data === YT.PlayerState.PLAYING)
           },
-          onError: (e: YT.OnErrorEvent) => {
-            console.error('YouTube player error:', e.data, 'for video:', videoId)
+          onError: () => {
+            setPlaybackError(true)
           },
         },
       })
@@ -86,6 +87,7 @@ export function useYouTubePlayer(videoId: string | null) {
   }, [])
 
   useEffect(() => {
+    setPlaybackError(false)
     const player = playerRef.current
     if (!player || !videoId || !isReady) return
     player.cueVideoById(videoId)
@@ -125,5 +127,6 @@ export function useYouTubePlayer(videoId: string | null) {
     pause,
     playSegment,
     seekToStart,
+    playbackError,
   }
 }

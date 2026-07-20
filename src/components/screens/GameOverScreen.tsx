@@ -44,7 +44,7 @@ export default function GameOverScreen() {
             <div
               key={p.id}
               className={`flex items-center justify-between rounded px-4 py-3 ${
-                i === 0 ? 'bg-slate-700 ring-1 ring-slate-500' : 'bg-slate-800'
+                i === 0 ? 'bg-brand-mid ring-1 ring-brand-mid' : 'bg-brand-dark'
               }`}
             >
               <span className="flex items-center gap-2">
@@ -62,25 +62,25 @@ export default function GameOverScreen() {
           ))}
         </div>
 
-        <p className="text-center text-sm text-slate-400">
+        <p className="text-center text-sm text-brand-text">
           {rounds.length} rounds played
         </p>
 
         <div className="flex flex-col gap-3">
           <button
-            className="rounded bg-slate-700 px-4 py-2 font-semibold hover:bg-slate-600"
+            className="rounded bg-brand-mid px-4 py-2 font-semibold hover:bg-brand-light"
             onClick={handlePlayAgain}
           >
             Play Again
           </button>
           <button
-            className="rounded bg-slate-700 px-4 py-2 hover:bg-slate-600"
+            className="rounded bg-brand-mid px-4 py-2 hover:bg-brand-light"
             onClick={handleEditPlayers}
           >
             Edit Players
           </button>
           <button
-            className="rounded bg-slate-700 px-4 py-2 hover:bg-slate-600"
+            className="rounded bg-brand-mid px-4 py-2 hover:bg-brand-light"
             onClick={handleNewPlaylist}
           >
             New Playlist

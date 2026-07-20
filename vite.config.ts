@@ -9,16 +9,21 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
         name: 'Hit Me With Your Best Shot',
         short_name: 'BestShot',
         description: 'A host-controlled music clip guessing party game',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#080F2C',
+        background_color: '#080F2C',
         display: 'standalone',
         orientation: 'any',
         icons: [
+          {
+            src: 'pwa-64x64.png',
+            sizes: '64x64',
+            type: 'image/png',
+          },
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
@@ -28,6 +33,12 @@ export default defineConfig({
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
+          },
+          {
+            src: 'maskable-icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },

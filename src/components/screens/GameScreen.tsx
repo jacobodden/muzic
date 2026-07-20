@@ -21,7 +21,7 @@ export default function GameScreen() {
   const setScreen = useGameStore((s) => s.setScreen)
 
   const videoId = shuffledIds[currentVideoIndex] ?? null
-  const { containerRef, play, pause, playSegment } = useYouTubePlayer(videoId)
+  const { containerRef, play, pause, playSegment, playbackError } = useYouTubePlayer(videoId)
   const isPlaying = usePlayerStore((s) => s.isPlaying)
 
   const currentVideo = useMemo(() => {
@@ -57,32 +57,41 @@ export default function GameScreen() {
 
       {/* Now Playing */}
       <div className="w-full max-w-md sm:max-w-lg md:max-w-xl space-y-4 mt-4">
-        <div className="relative aspect-video sm:aspect-video max-h-96 overflow-hidden rounded bg-slate-800">
-          <img
-            src={currentVideo.thumbnail || undefined}
-            alt=""
-            className={`h-full w-full object-cover transition-all ${
-              albumArtBlurred ? 'blur-xl scale-110' : ''
-            }`}
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-4xl opacity-30">♪</p>
-          </div>
+        <div className="relative aspect-video sm:aspect-video max-h-96 overflow-hidden rounded bg-brand-dark">
+          {playbackError ? (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-4 text-center">
+              <p className="text-lg font-semibold text-red-400">Song Unavailable</p>
+              <p className="text-sm text-brand-text">Skip to the next song to continue.</p>
+            </div>
+          ) : (
+            <>
+              <img
+                src={currentVideo.thumbnail || undefined}
+                alt=""
+                className={`h-full w-full object-cover transition-all ${
+                  albumArtBlurred ? 'blur-xl scale-110' : ''
+                }`}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-4xl opacity-30">♪</p>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="text-center">
           {titleRevealed ? (
             <h2 className="text-xl font-bold">{currentVideo.title}</h2>
           ) : (
-            <h2 className="text-xl text-slate-500">???</h2>
+            <h2 className="text-xl text-brand-muted">???</h2>
           )}
           {titleRevealed ? (
-            <p className="text-slate-400">{currentVideo.artist}</p>
+            <p className="text-brand-text">{currentVideo.artist}</p>
           ) : (
-            <p className="text-slate-600">???</p>
+            <p className="text-brand-muted">???</p>
           )}
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-brand-muted mt-1">
             Song {currentVideoIndex + 1} / {shuffledIds.length}
           </p>
         </div>
@@ -90,32 +99,32 @@ export default function GameScreen() {
         {/* Transport Controls */}
         <div className="flex justify-center gap-2 md:gap-3 flex-wrap">
           <button
-            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600 disabled:opacity-30"
+            className="rounded bg-brand-mid px-3 py-2 hover:bg-brand-light disabled:opacity-30"
             onClick={previousSong}
             disabled={atStart}
           >
             Prev
           </button>
           <button
-            className="rounded bg-slate-700 px-4 py-2 hover:bg-slate-600"
+            className="rounded bg-brand-mid px-4 py-2 hover:bg-brand-light"
             onClick={isPlaying ? pause : play}
           >
             {isPlaying ? 'Pause' : 'Play'}
           </button>
           <button
-            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600"
+            className="rounded bg-brand-mid px-3 py-2 hover:bg-brand-light"
             onClick={() => playSegment(5)}
           >
             5s
           </button>
           <button
-            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600"
+            className="rounded bg-brand-mid px-3 py-2 hover:bg-brand-light"
             onClick={() => playSegment(10)}
           >
             10s
           </button>
           <button
-            className="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600 disabled:opacity-30"
+            className="rounded bg-brand-mid px-3 py-2 hover:bg-brand-light disabled:opacity-30"
             onClick={nextSong}
             disabled={atEnd}
           >
@@ -143,7 +152,7 @@ export default function GameScreen() {
           </button>
           {atEnd && (
             <button
-              className="rounded bg-slate-700 px-4 py-2 text-base font-semibold hover:bg-slate-600"
+              className="rounded bg-brand-mid px-4 py-2 text-base font-semibold hover:bg-brand-light"
               onClick={handleFinish}
             >
               Finish Game
@@ -157,7 +166,7 @@ export default function GameScreen() {
           {players.map((p, i) => (
             <div
               key={p.id}
-              className="flex items-center justify-between rounded bg-slate-800 px-3 py-2"
+              className="flex items-center justify-between rounded bg-brand-dark px-3 py-2"
             >
               <span className="flex items-center gap-2">
                 <span

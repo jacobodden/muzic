@@ -8,9 +8,16 @@ export default defineConfig({
     },
     maskable: {
       sizes: [512],
+      resizeOptions: {
+        background: '#080F2C',
+      },
     },
     apple: {
       sizes: [180],
+      padding: 0,
+      resizeOptions: {
+        background: '#080F2C',
+      },
     },
   },
   images: ['public/favicon.png'],

@@ -24,9 +24,9 @@ App.tsx
 
 ### `<GameScreen />`
 - Hidden YouTube IFrame player (audio only)
-- Now Playing card — album art (blur toggle), title, artist always shown
+- Now Playing card — album art (blur toggle), title and artist toggleable (hidden by default)
 - Transport controls — Play/Pause toggle, 5s, 10s, Prev, Next
-- Host actions — Blur/Unblur Art, Skip, Finish Game
+- Host actions — Show/Hide Title, Blur/Unblur Art, Finish Game (last song only)
 - Player scoreboard — name, score, -1 and +1 buttons per player
 
 ### `<GameOverScreen />`
@@ -39,7 +39,7 @@ App.tsx
 | Hook | Returns | Purpose |
 |------|---------|---------|
 | `useYouTubePlayer(videoId)` | `{ containerRef, play, pause, playSegment, seekToStart }` | Manages hidden IFrame player |
-| `useKeyboardShortcuts(handlers)` | — | Registers global key handlers |
+| `useKeyboardShortcuts(shortcuts)` | — | Registers global key handlers |
 
 ### `useYouTubePlayer` details
 - Loads YouTube IFrame API via `onYouTubeIframeAPIReady` callback

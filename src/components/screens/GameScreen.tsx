@@ -44,7 +44,6 @@ export default function GameScreen() {
       ArrowRight: nextSong,
       ArrowLeft: previousSong,
       b: toggleBlur,
-      r: toggleReveal,
     }),
     [isPlaying, pause, play, playSegment, nextSong, previousSong, toggleBlur, toggleReveal],
   )

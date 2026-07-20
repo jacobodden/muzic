@@ -83,6 +83,7 @@ interface GameStore {
   currentVideoIndex: number
   rounds: Round[]
   albumArtBlurred: boolean
+  titleRevealed: boolean
 
   setScreen: (screen: Screen) => void
   loadPlaylist: (playlist: CachedPlaylist) => void
@@ -93,8 +94,8 @@ interface GameStore {
   previousSong: () => void
   awardPoint: (playerId: string) => void
   removePoint: (playerId: string) => void
-  skipRound: () => void
   toggleBlur: () => void
+  toggleReveal: () => void
   resetGame: () => void
   getCurrentVideoId: () => string | null
   getStandings: () => Player[]
@@ -107,9 +108,11 @@ interface GameStore {
 interface PlayerStore {
   isReady: boolean
   isPlaying: boolean
+  currentTime: number
 
   setReady: (ready: boolean) => void
   setPlaying: (playing: boolean) => void
+  setCurrentTime: (time: number) => void
 }
 ```
 

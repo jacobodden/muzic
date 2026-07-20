@@ -96,4 +96,4 @@ See `.env.example` for the template.
 | `npm run typecheck` | TypeScript type check |
 
 ---
-See `docs/` for detailed architecture, data model, component tree, game flow, and YouTube integration documentation.
+See `docs/` for detailed architecture, data model, component tree, and YouTube integration documentation.
